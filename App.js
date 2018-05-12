@@ -1,58 +1,122 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import {StyleSheet, Text, View, ImageBackground, Button } from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+export default class App extends Component {
 
-type Props = {};
-export default class App extends Component<Props> {
+  constructor(props){
+      super(props);
+
+      this.state ={
+          consumed:0,
+          status:'Bad...',
+          percentage:0
+      };
+
+      this.addGlass = this.addGlass.bind(this);
+      this.update   = this.update.bind(this);
+  }
+
+  update(){
+      let localState = this.state;
+      localState.percentage = Math.floor((localState.consumed/2000)*100);
+
+      if(localState.percentage >= 100){
+        
+        localState.status = "Perfect!"
+      
+      }else if(localState.percentage > 75 && localState.percentage < 100){
+
+        localState.status = "Getting better =D"
+      }else if(localState.percentage >= 25 &&  localState.percentage <= 75){
+        
+        localState.status = "Keep going";
+      }else{
+        localState.status = "Bad..."
+      }
+
+      this.setState(localState);
+  }
+
+  addGlass(){
+      let localState = this.state;
+      localState.consumed +=200;
+      this.setState(localState);
+
+      this.update();
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
+      <View style={styles.body}>
+        <ImageBackground style={styles.bgimage} source={require('./images/waterbg.png')}>
+            <View>
+              <View style={styles.infoArea}>
+                <View style={styles.area}>
+                    <Text style={styles.areaTitle}> Goal </Text>
+                    <Text style={styles.areaData}> 2000ml </Text>
+                </View>
+                <View style={styles.area}>
+                    <Text style={styles.areaTitle}> Consumed </Text>
+                    <Text style={styles.areaData}> {this.state.consumed}ml </Text>
+                </View>
+                <View style={styles.area}>
+                    <Text style={styles.areaTitle}> Status </Text>
+                    <Text style={styles.areaData}> {this.state.status} </Text>
+                </View>
+              </View>
+
+              <View style={styles.areaPercentage}>
+                  <Text style={styles.textPercentage}> {this.state.percentage}% </Text>
+              </View>
+
+              <View style={styles.areaButton}>
+                  <Button title="Drink 200ml" color='#45b2fc' onPress={this.addGlass}/>
+              </View>
+            </View>
+        </ImageBackground>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    body:{
+        flex:1,
+        paddingTop:20
+    },
+    bgimage:{
+        flex:1,
+        width:null
+    },
+    infoArea:{
+        flex:1,
+        flexDirection:'row',
+        marginTop:70
+    },
+    area:{
+        flex:1,
+        alignItems:'center',
+
+    },
+    areaTitle:{
+        color:'#45b2fc'
+    },
+    areaData:{
+        color:'#2b4274',
+        fontSize:15,
+        fontWeight:'bold'
+    },
+    areaPercentage:{
+        marginTop:170,
+        alignItems:'center'
+    },
+    textPercentage:{
+        fontSize:50,
+        color:'#FFFFFF',
+        backgroundColor:'transparent'
+    },
+    areaButton:{
+        marginTop: 30,
+        alignItems:'center'
+    }
 });
